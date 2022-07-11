@@ -53,7 +53,7 @@ class OxasController {
     public function encryptPassword( $password = null ) {
         
         if( $password == null ) {
-            // use $this->password
+            $soapEncryptPassword = new OxasSoapEncryptPassword( $this->password, $this->endpoint, $this->getSoapClient() );
         } else {
             // use $password
         }
@@ -68,6 +68,25 @@ class OxasController {
      */
     public function setclient( $client ) {
         $this->client = $client;
+    }
+
+    /**
+     * [summary]
+     * 
+     * @return SoapClient   soapClient
+     */
+    private function getSoapClient() {
+        $soapClient = new SoapClient( 
+            null, array( 
+                'location' => $this->endpoint,
+                'uri' => 'http://www.opacc.com/Opacc/ServiceBus/Interface/Ws/Generic',
+                'trace'=>1, 
+                'exceptions'=> 1, 			
+                'encoding' => 'UTF-8',
+            )
+        );
+
+        return $soapClient;
     }
 
 }
