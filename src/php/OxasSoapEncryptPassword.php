@@ -13,45 +13,58 @@ class OxasSoapEncryptPassword {
     protected $password;
     protected $endpoint;
     protected $soapClient;
+    protected $soapResult;
 
     protected $soapAction = "http://www.opacc.com/Opacc/ServiceBus/Interface/Ws/Generic/Generic/EncryptPassword";
 
     /**
      * Constructor
      * 
-     * @param string    password
-     * @param string    endpoint
+     * @param string password
+     * @param string endpoint
      */
     public function __construct( $password, $endpoint, $soapClient ) {
-        
+
         $this->password     = $password;
         $this->endpoint     = $endpoint;
         $this->soapClient   = $soapClient;
 
         // do soap request
         $test = $this->sendSoapRequest();
-        var_dump($test);
     }
 
     /**
      * [summary]
      * 
-     * @return string   soapRequest
+     * @return string soapRequest
+     */
+    public function parseSoapResult() {
+
+        $jsonString = json_encode( $this->soapResult );
+        $result_array = json_decode($jsonString, TRUE);
+
+        return $result_array['sBody']['EncryptPasswordResponse']['EncryptPasswordResult'];
+    }
+
+    /**
+     * [summary]
+     * 
+     * @return string soapRequest
      */
     private function sendSoapRequest() {
 
         $soapRequest = $this->getSoapRequest();
 
         $result = $this->soapClient->__doRequest( $soapRequest, $this->endpoint, $this->soapAction, 1);
-        $response = simplexml_load_string( preg_replace( "/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $result ) ) or die("ERROR: Can't load XML-Data");
+        $this->soapResult = simplexml_load_string( preg_replace( "/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $result ) ) or die("ERROR: Can't load XML-Data");
 
-        return $response;
+        return $this->soapResult;
     }
 
     /**
      * [summary]
      * 
-     * @return string   soapRequest
+     * @return string soapRequest
      */
     private function getSoapRequest() {
 
