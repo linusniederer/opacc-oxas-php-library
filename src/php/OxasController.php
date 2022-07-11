@@ -14,18 +14,24 @@ class OxasController {
     protected $password;
     protected $client;
 
+    protected $encryptedPassword;
+
     protected $endpoint;
     protected $action = "http://www.opacc.com/Opacc/ServiceBus/Interface/Ws/Generic/Generic/";
 
     /**
      * Constructor
      * 
-     * @param string    user 
-     * @param string    password
-     * @param integer   client
-     * @param string    endpoint
+     * @param string user 
+     * @param string password
+     * @param integer client
+     * @param string endpoint
      */
     public function __construct( $user, $password, $client, $endpoint ) {
+
+        require dirname(__FILE__) . '\OxasSoapEncryptPassword.php';
+        require dirname(__FILE__) . '\OxasSoapFlatRequest.php';
+
         $this->user = $user;
         $this->password = $password;
         $this->client = $client;
@@ -35,45 +41,50 @@ class OxasController {
     /**
      * [summary]
      * 
-     * @param   string  service
-     * @param   integer port
-     * @param   array   params
-     * @param   array   options
+     * @param string port
+     * @param string operation
+     * @param array requestParams
      */
-    public function sendRequest( $service, $port, $params, $options ) {
+    public function flatRequest( $port, $operation, $requestParams ) {
+
+        $requestInformations = array(
+            'endpoint'  => $this->endpoint,
+            'user'      => $this->user,
+            'password'  => $this->encryptPassword(),
+            'client'    => $this->client,
+            'port'      => $port, 
+            'operation' => $operation,
+            'soapClient'=> $this->getSoapClient(),
+            'requestParams' => $requestParams
+        );
+
+        $soapFlatRequest = new OxasSoapFlatRequest( $requestInformations );
         
-        return "";
+        return $soapFlatRequest->parseSoapResult();
     }
 
     /**
      * [summary]
      * 
      * @param string password (optional)
+     * @return string encrypted password
      */
     public function encryptPassword( $password = null ) {
         
         if( $password == null ) {
             $soapEncryptPassword = new OxasSoapEncryptPassword( $this->password, $this->endpoint, $this->getSoapClient() );
         } else {
-            // use $password
+            $soapEncryptPassword = new OxasSoapEncryptPassword( $password, $this->endpoint, $this->getSoapClient() );
         }
 
-        return "";
+        $this->encryptPassword = $soapEncryptPassword->parseSoapResult();
+        return $this->encryptPassword;
     }
 
     /**
      * [summary]
      * 
-     * @param integer   client
-     */
-    public function setclient( $client ) {
-        $this->client = $client;
-    }
-
-    /**
-     * [summary]
-     * 
-     * @return SoapClient   soapClient
+     * @return SoapClient soapClient
      */
     private function getSoapClient() {
         $soapClient = new SoapClient( 
