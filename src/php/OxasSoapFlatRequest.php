@@ -59,6 +59,23 @@ class OxasSoapFlatRequest {
         $rowCount = $result_array['sBody']['FlatRequestResponse']['ResponseData']['RowCount'];
         $columnCount = $result_array['sBody']['FlatRequestResponse']['ResponseData']['ColumnCount'];
 
+        if( $rowCount > 1) {
+            return $this->parseSoapResultMultiRows( $result_array, $rowCount, $columnCount );
+        } else {
+            return $this->parseSoapResultSingleRow( $result_array, $columnCount );
+        }        
+    }
+
+    /**
+     * [summary]
+     * 
+     * @param array result_array
+     * @param integer rowCount
+     * @param integer columnCount
+     * @return array data
+     */
+    private function parseSoapResultMultiRows( $result_array, $rowCount, $columnCount ) {
+        
         $data = array();
 
         for( $j = 0; $j < $rowCount; $j++ ) {
@@ -76,6 +93,30 @@ class OxasSoapFlatRequest {
             array_push($data, $row);
         }
 
+        return $data;
+    }
+
+    /**
+     * [summary]
+     * 
+     * @param array result_array
+     * @param integer columnCount
+     * @return array data
+     */
+    private function parseSoapResultSingleRow( $result_array, $columnCount ) {
+
+        $data = array();
+        $row = array();
+
+        for( $i = 0; $i < $columnCount; $i++ ) {
+            $key = $result_array['sBody']['FlatRequestResponse']['ResponseData']['Columns']['Column'][$i]['Name'];
+            $value = $result_array['sBody']['FlatRequestResponse']['ResponseData']['Columns']['Column'][$i]['Rows']['astring'];
+
+            if ( empty( $value ) ) { $value = null; }
+            $row[ $key ] = $value;
+        }
+
+        array_push($data, $row);
         return $data;
     }
 
