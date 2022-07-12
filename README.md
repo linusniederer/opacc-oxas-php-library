@@ -16,7 +16,7 @@ The different classes are described below.
 |OxasController|This class manages the connection to OpaccOXAS|
 |OxasRequestCache|This class manages and modifies the cache|
 |OxasSoapEncryptPassword|This class is used to send a password encryption request|
-|OxasSoapFlatRequest.php|OxasSoapFlatRequest|This class is used to send a soap flat request|
+|OxasSoapFlatRequest|This class is used to send a soap flat request|
 
 There is a script example for each of these classes in th examples folder. These example scripts can be used during development.
 
