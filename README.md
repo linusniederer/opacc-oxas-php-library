@@ -15,8 +15,7 @@ There is a script example for each of these classes in th examples folder. These
 ## Usage (withoud Cache)
 The library can be used with or without cache class. For large requests, it makes sense to store the data in a cache.
 
-![Diagram: OxasRequest without cache](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
-
+![Diagram: OxasRequest without cache](https://github.com/linusniederer/opacc-oxas-php-library/blob/main/doc/OxasRequestNoCache.png?raw=true)
 
 Before the library can be used, the library must be imported. The import path must be adjusted according to the project.
 
