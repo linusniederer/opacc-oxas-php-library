@@ -20,7 +20,9 @@ class OxasSoapFlatRequest {
     
     protected $soapClient;
     protected $requestParams;
-    protected $soapResult;
+    
+    public $soapResult;
+    public $executionTime;
 
     protected $soapAction = "http://www.opacc.com/Opacc/ServiceBus/Interface/Ws/Generic/Generic/FlatRequest";
 
@@ -30,6 +32,8 @@ class OxasSoapFlatRequest {
      * @param array requestInformations
      */
     public function __construct( $requestInformations ) {
+        
+        $start = microtime(true);
 
         $this->user              = $requestInformations['user'];
         $this->encryptedPassword = $requestInformations['password'];
@@ -43,7 +47,8 @@ class OxasSoapFlatRequest {
         $this->requestParams     = $requestInformations['requestParams'];
         
         // do soap request
-        $test = $this->sendSoapRequest();  
+        $this->sendSoapRequest();
+        $this->executionTime = microtime(true) - $start;
     }
 
     /**
