@@ -68,7 +68,7 @@ class OxasRequestCache {
      */
     private function checkCache( $cacheName, $cacheAge ) {
 
-        $cacheFile = $this->folder . '\\' . $cacheName;
+        $cacheFile = $this->folder . '' . $cacheName;
 
         if( file_exists( $cacheFile ) ) {
             

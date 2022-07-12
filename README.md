@@ -82,7 +82,7 @@ $password   = '';               // Unencrypted password
 $client     = 10;               // OpaccOXAS Client (Mandant)
 $endpoint   = '';               // OpaccOXAS Soap Endpoint (not wsdl!)
 
-$cacheFolder = '/var/cache/';   // Path to the cache folder
+$cacheFolder = '/var/cache/';   // Path to the cache folder with final slash
 
 $oxas       = new OxasController( $user, $password, $client, $endpoint );
 $oxasCache  = new OxasRequestCache( $cacheFolder, $oxas );

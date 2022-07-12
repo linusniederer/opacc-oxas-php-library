@@ -11,7 +11,7 @@ $client     = 10;
 $endpoint   = ''; 
 
 // set cache settings
-$cacheFolder = 'C:\Temp\cache';
+$cacheFolder = '/var/cache/';
 
 // create new instances of OxasController and OxasRequestCache
 $oxas       = new OxasController( $user, $password, $client, $endpoint );
