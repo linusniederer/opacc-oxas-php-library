@@ -11,11 +11,11 @@ Using the OpaccOXAS PHP library, requests can be easily sent to OpaccOXAS. The l
 ## General Information
 The different classes are described below.
 
-|Filename|Classname|Description|
-|---|---|---|
-|OxasController.php|OxasController|This class manages the connection to OpaccOXAS|
-|OxasRequestCache.php|OxasRequestCache|This class manages and modifies the cache|
-|OxasSoapEncryptPassword.php|OxasSoapEncryptPassword|This class is used to send a password encryption request|
+|Classname|Description|
+|---|---|
+|OxasController|This class manages the connection to OpaccOXAS|
+|OxasRequestCache|This class manages and modifies the cache|
+|OxasSoapEncryptPassword|This class is used to send a password encryption request|
 |OxasSoapFlatRequest.php|OxasSoapFlatRequest|This class is used to send a soap flat request|
 
 There is a script example for each of these classes in th examples folder. These example scripts can be used during development.
