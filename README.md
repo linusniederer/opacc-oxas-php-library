@@ -37,7 +37,7 @@ Now a new instance of the OxasController must be instantiated:
 
 ```php
 $user       = '';           // OpaccOXAS User with correct permissions
-$password   = '';           // Uncrypted password
+$password   = '';           // Unencrypted password
 $client     = 10;           // OpaccOXAS Client (Mandant)
 $endpoint   = '';           // OpaccOXAS Soap Endpoint (not wsdl!)
 
@@ -78,7 +78,7 @@ When using the cache, an instance of the OxasController must also be instantiate
 
 ```php
 $user       = '';               // OpaccOXAS User with correct permissions
-$password   = '';               // Uncrypted password
+$password   = '';               // Unencrypted password
 $client     = 10;               // OpaccOXAS Client (Mandant)
 $endpoint   = '';               // OpaccOXAS Soap Endpoint (not wsdl!)
 
