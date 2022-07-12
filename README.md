@@ -1,6 +1,14 @@
 # OpaccOXAS PHP Library
 Using the OpaccOXAS PHP library, requests can be easily sent to OpaccOXAS. The library has four different classes, which must be included in the project. 
 
+## Table of Contents
+- [OpaccOXAS PHP Library](#opaccoxas-php-library)
+  - [Table of Contents](#table-of-contents)
+  - [General Information](#general-information)
+  - [Usage (without Cache)](#usage-without-cache)
+  - [Usage (with Cache)](#usage-with-cache)
+
+## General Information
 The different classes are described below.
 
 |Filename|Classname|Description|
@@ -56,3 +64,52 @@ More examples can be found in the examples folder.
 In most cases it makes sense to use a cache for the requests. This way, the data does not have to be reloaded with every site reload.
 
 ![Diagram: OxasRequest with cache](https://github.com/linusniederer/opacc-oxas-php-library/blob/main/doc/OxasRequestCache.png?raw=true)
+
+When using the cache, two different libraries must be imported. As can be seen on the diagram, requests are now only sent via the OxasRequestCache.
+
+```php
+require '.\src\OxasController.php';
+require '.\src\OxasRequestCache.php';
+```
+
+**Important:** The OxasController imports the classes OxasSoapEncryptPassword and OxasSoapFlatRequest. For this reason, these two classes must be located in the same folder as the OxasController.
+
+When using the cache, an instance of the OxasController must also be instantiated first. Then the created instance is passed to the OxasRequestCache.
+
+```php
+$user       = '';               // OpaccOXAS User with correct permissions
+$password   = '';               // Uncrypted password
+$client     = 10;               // OpaccOXAS Client (Mandant)
+$endpoint   = '';               // OpaccOXAS Soap Endpoint (not wsdl!)
+
+$cacheFolder = '/var/cache/';   // Path to the cache folder
+
+$oxas       = new OxasController( $user, $password, $client, $endpoint );
+$oxasCache  = new OxasRequestCache( $cacheFolder, $oxas );
+```
+
+The created $oxasCache object can now be used to execute methods of the class. The same methods can be used as for the OxasController.
+
+The following code requests 1000 addresses from OpaccOXAS. The response should be stored in a cache, which has a lifetime of 30 minutes.
+
+```php
+$parameters = array(
+    'Addr',
+    '0',
+    'n',
+    '1',
+    '1000',
+    '',
+    '',
+    'Addr.Number,Addr.FirstName,Addr.LastName'
+);
+
+$cacheOptions = array( 
+    'name'  => 'exampleFlatRequest.cache',          // Name of the cache file
+    'age'   => 30                                   // Cache lifetime in minutes
+);
+
+$result = $oxasCache->flatRequest( 'Biz', 'GetBo', $parameters, $cacheOptions );
+```
+
+The method returns a multidimensional array which is stored in the object $result.
