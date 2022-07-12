@@ -5,8 +5,8 @@ Using the OpaccOXAS PHP library, requests can be easily sent to OpaccOXAS. The l
 - [OpaccOXAS PHP Library](#opaccoxas-php-library)
   - [Table of Contents](#table-of-contents)
   - [General Information](#general-information)
-  - [Usage (without Cache)](#usage-without-cache)
-  - [Usage (with Cache)](#usage-with-cache)
+  - [Usage (without cache)](#usage-without-cache)
+  - [Usage (with cache)](#usage-with-cache)
 
 ## General Information
 The different classes are described below.
@@ -20,7 +20,7 @@ The different classes are described below.
 
 There is a script example for each of these classes in th examples folder. These example scripts can be used during development.
 
-## Usage (without Cache)
+## Usage (without cache)
 The library can be used with or without cache class. For large requests, it makes sense to store the data in a cache.
 
 ![Diagram: OxasRequest without cache](https://github.com/linusniederer/opacc-oxas-php-library/blob/main/doc/OxasRequestNoCache.png?raw=true)
@@ -60,7 +60,7 @@ Both methods return the encrypted password as a string and additionally store it
 
 More examples can be found in the examples folder.
 
-## Usage (with Cache)
+## Usage (with cache)
 In most cases it makes sense to use a cache for the requests. This way, the data does not have to be reloaded with every site reload.
 
 ![Diagram: OxasRequest with cache](https://github.com/linusniederer/opacc-oxas-php-library/blob/main/doc/OxasRequestCache.png?raw=true)
