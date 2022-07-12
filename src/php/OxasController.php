@@ -15,9 +15,7 @@ class OxasController {
     protected $client;
 
     protected $encryptedPassword;
-
     protected $endpoint;
-    protected $action = "http://www.opacc.com/Opacc/ServiceBus/Interface/Ws/Generic/Generic/";
 
     /**
      * Constructor
@@ -32,9 +30,9 @@ class OxasController {
         require dirname(__FILE__) . '\OxasSoapEncryptPassword.php';
         require dirname(__FILE__) . '\OxasSoapFlatRequest.php';
 
-        $this->user = $user;
+        $this->user     = $user;
         $this->password = $password;
-        $this->client = $client;
+        $this->client   = $client;
         $this->endpoint = $endpoint;
     }
    
