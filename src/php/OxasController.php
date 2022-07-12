@@ -10,12 +10,12 @@
  */
 class OxasController {
 
-    protected $user;
-    protected $password;
-    protected $client;
+    public $user;
+    public $password;
+    public $client;
 
-    protected $encryptedPassword;
-    protected $endpoint;
+    public $encryptedPassword;
+    public $endpoint;
 
     /**
      * Constructor
@@ -84,7 +84,7 @@ class OxasController {
      * 
      * @return SoapClient soapClient
      */
-    private function getSoapClient() {
+    public function getSoapClient() {
         $soapClient = new SoapClient( 
             null, array( 
                 'location' => $this->endpoint,
