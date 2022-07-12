@@ -1,5 +1,5 @@
 # OpaccOXAS PHP Library
-Using the OpaccOXAS PHP library, requests can be easily sent to OpaccOXAS. The library has four different classes, which must be included in the project. 
+The OpaccOXAS PHP Library provides easy access to OpaccOXAS. The library has four different classes, which must be included in the project. 
 
 ## Table of Contents
 - [OpaccOXAS PHP Library](#opaccoxas-php-library)
