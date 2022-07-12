@@ -12,7 +12,7 @@ The different classes are described below.
 
 There is a script example for each of these classes in th examples folder. These example scripts can be used during development.
 
-## Usage (withoud Cache)
+## Usage (without Cache)
 The library can be used with or without cache class. For large requests, it makes sense to store the data in a cache.
 
 ![Diagram: OxasRequest without cache](https://github.com/linusniederer/opacc-oxas-php-library/blob/main/doc/OxasRequestNoCache.png?raw=true)
@@ -49,3 +49,10 @@ $password = $oxas->encryptPassword('password');
 ```
 
 Both methods return the encrypted password as a string and additionally store it on the object.
+
+More examples can be found in the examples folder.
+
+## Usage (with Cache)
+In most cases it makes sense to use a cache for the requests. This way, the data does not have to be reloaded with every site reload.
+
+![Diagram: OxasRequest with cache](https://github.com/linusniederer/opacc-oxas-php-library/blob/main/doc/OxasRequestCache.png?raw=true)
