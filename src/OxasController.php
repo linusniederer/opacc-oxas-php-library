@@ -1,11 +1,13 @@
 <?php
 /**
  * 
- * [summary]
- * [description]
+ * OxasController Class
+ * 
+ * This class is used to manage the connection to OpaccOXAS.
+ * Requests to OpaccOXAS are sent to this class. The class forwards them to the two request classes.
  * 
  * @author https://github.com/linusniederer
- * @source https://github.com/linusniederer/opacc-oxas/src/php/OxasController.php
+ * @source https://github.com/linusniederer/opacc-oxas-php-library/blob/main/src/OxasController.php
  * @version 1.0
  */
 class OxasController {
@@ -37,11 +39,13 @@ class OxasController {
     }
    
     /**
-     * [summary]
+     * This method processes the soap requests
      * 
      * @param string port
      * @param string operation
      * @param array requestParams
+     * 
+     * @return array parsed soap result
      */
     public function flatRequest( $port, $operation, $requestParams ) {
 
@@ -62,9 +66,10 @@ class OxasController {
     }
 
     /**
-     * [summary]
+     * This method performs an encryption of the password
      * 
      * @param string password (optional)
+     * 
      * @return string encrypted password
      */
     public function encryptPassword( $password = null ) {
@@ -80,7 +85,7 @@ class OxasController {
     }
 
     /**
-     * [summary]
+     * This method creates a SoapClient which is passed as a parameter to the request classes
      * 
      * @return SoapClient soapClient
      */
