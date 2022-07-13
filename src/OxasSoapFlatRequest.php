@@ -1,14 +1,19 @@
 <?php
 /**
  * 
- * [summary]
- * [description]
+ * OxasSoapFlatRequest Class
+ * 
+ * This class sends soap flat requests to OpaccOXAS. 
+ * You can choose between different ports and operations. 
  * 
  * @author https://github.com/linusniederer
- * @source https://github.com/linusniederer/opacc-oxas/src/php/OxasSoapEncryptPassword.php
+ * @source https://github.com/linusniederer/opacc-oxas-php-library/blob/main/src/OxasSoapFlatRequest.php
  * @version 1.0
  */
 class OxasSoapFlatRequest {
+
+    public $soapResult;
+    public $executionTime;
 
     protected $user;
     protected $encryptedPassword;
@@ -20,9 +25,6 @@ class OxasSoapFlatRequest {
     
     protected $soapClient;
     protected $requestParams;
-    
-    public $soapResult;
-    public $executionTime;
 
     protected $soapAction = "http://www.opacc.com/Opacc/ServiceBus/Interface/Ws/Generic/Generic/FlatRequest";
 
@@ -52,9 +54,9 @@ class OxasSoapFlatRequest {
     }
 
     /**
-     * [summary]
+     * This method parses the soap request result
      * 
-     * @return string soapRequest
+     * @return array parsed soap result
      */
     public function parseSoapResult() {
 
@@ -72,12 +74,13 @@ class OxasSoapFlatRequest {
     }
 
     /**
-     * [summary]
+     * This method parses responses which have multiple rows
      * 
      * @param array result_array
      * @param integer rowCount
      * @param integer columnCount
-     * @return array data
+     * 
+     * @return array parsed soap result
      */
     private function parseSoapResultMultiRows( $result_array, $rowCount, $columnCount ) {
         
@@ -102,11 +105,12 @@ class OxasSoapFlatRequest {
     }
 
     /**
-     * [summary]
+     * This method parses responses which have only on row
      * 
      * @param array result_array
      * @param integer columnCount
-     * @return array data
+     * 
+     * @return array parsed soap result
      */
     private function parseSoapResultSingleRow( $result_array, $columnCount ) {
 
@@ -126,9 +130,9 @@ class OxasSoapFlatRequest {
     }
 
     /**
-     * [summary]
+     * This method sends a soap request to OpaccOXAS
      * 
-     * @return string soapRequest
+     * @return SimpleXML soapResult
      */
     private function sendSoapRequest() {
 
@@ -141,7 +145,7 @@ class OxasSoapFlatRequest {
     }
 
     /**
-     * [summary]
+     * This method returns the soap schema as return value
      * 
      * @return string soapRequest
      */
@@ -171,7 +175,7 @@ class OxasSoapFlatRequest {
     }
 
     /**
-     * [summary]
+     * This method sets the parameters for the request
      * 
      * @return string parameters
      */

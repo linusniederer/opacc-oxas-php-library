@@ -1,11 +1,12 @@
 <?php
 /**
  * 
- * [summary]
- * [description]
+ * OxasSoapEncryptPassword Class
+ * 
+ * This class encrypts the password with the encryption algorithm of OpaccOXAS
  * 
  * @author https://github.com/linusniederer
- * @source https://github.com/linusniederer/opacc-oxas/src/php/OxasSoapEncryptPassword.php
+ * @source https://github.com/linusniederer/opacc-oxas-php-library/blob/main/src/OxasSoapEncryptPassword.php
  * @version 1.0
  */
 class OxasSoapEncryptPassword {
@@ -22,6 +23,7 @@ class OxasSoapEncryptPassword {
      * 
      * @param string password
      * @param string endpoint
+     * @param SoapClient soapClient
      */
     public function __construct( $password, $endpoint, $soapClient ) {
 
@@ -34,9 +36,9 @@ class OxasSoapEncryptPassword {
     }
 
     /**
-     * [summary]
+     * This method parses the soap request result
      * 
-     * @return string soapRequest
+     * @return string encrypted password
      */
     public function parseSoapResult() {
 
@@ -47,9 +49,9 @@ class OxasSoapEncryptPassword {
     }
 
     /**
-     * [summary]
+     * This method sends a soap request to OpaccOXAS
      * 
-     * @return string soapRequest
+     * @return SimpleXML soapResult
      */
     private function sendSoapRequest() {
 
@@ -62,7 +64,7 @@ class OxasSoapEncryptPassword {
     }
 
     /**
-     * [summary]
+     * This method returns the soap schema as return value
      * 
      * @return string soapRequest
      */
