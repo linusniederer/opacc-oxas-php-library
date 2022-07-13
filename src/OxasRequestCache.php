@@ -1,11 +1,13 @@
 <?php
 /**
  * 
- * [summary]
- * [description]
+ * OxasRequestCache Class
  * 
+ * This class creates a cache to store results from requests.
+ * When initializing the class, the path for the cache can be set.
+ *  
  * @author https://github.com/linusniederer
- * @source https://github.com/linusniederer/opacc-oxas/src/php/OxasRequestCache.php
+ * @source https://github.com/linusniederer/opacc-oxas-php-library/blob/main/src/OxasRequestCache.php
  * @version 1.0
  */
 class OxasRequestCache {
@@ -25,11 +27,14 @@ class OxasRequestCache {
     }
 
     /**
-     * [summary]
+     * This method processes the soap requests
      * 
      * @param string port
      * @param string operation
      * @param array requestParams
+     * @param array cacheOptions
+     * 
+     * @return array parsed soap result
      */
     public function flatRequest( $port, $operation, $requestParams, $cacheOptions ) {
  
@@ -62,9 +67,12 @@ class OxasRequestCache {
     }
 
     /**
-     * [summary]
+     * This class checks if a cache was created for the existing request
      * 
-     * @return string soapRequest
+     * @param string cacheName
+     * @param integer cacheAge
+     * 
+     * @return boolean cache exists
      */
     private function checkCache( $cacheName, $cacheAge ) {
 
@@ -83,9 +91,11 @@ class OxasRequestCache {
     }
 
     /**
-     * [summary]
+     * This method loads the cache from the directory
      * 
-     * @return string soapRequest
+     * @param string cacheName
+     * 
+     * @return array parsed soap result
      */
     private function getCache( $cacheName ) {
 
@@ -96,9 +106,10 @@ class OxasRequestCache {
     }
 
     /**
-     * [summary]
+     * This method creates a new cache file in the directory
      * 
-     * @return string soapRequest
+     * @param string cacheName
+     * @param simpleXML data
      */
     private function setCache( $cacheName, $data ) {
 
@@ -107,9 +118,11 @@ class OxasRequestCache {
     }
 
     /**
-     * [summary]
+     * This method parses the read cache and returns it
      * 
-     * @return string soapRequest
+     * @param simpleXML cacheData
+     * 
+     * @return array parsed soap result
      */
     private function parseCache( $cacheData ) {
 
@@ -127,12 +140,13 @@ class OxasRequestCache {
     }
 
     /**
-     * [summary]
+     * This method parses responses which have multiple rows
      * 
      * @param array result_array
      * @param integer rowCount
      * @param integer columnCount
-     * @return array data
+     * 
+     * @return array parsed soap result
      */
     private function parseCacheMultiRows( $result_array, $rowCount, $columnCount ) {
         
@@ -157,11 +171,12 @@ class OxasRequestCache {
     }
 
     /**
-     * [summary]
+     * This method parses responses which have only on row
      * 
      * @param array result_array
      * @param integer columnCount
-     * @return array data
+     * 
+     * @return array parsed soap result
      */
     private function parseCacheSingleRow( $result_array, $columnCount ) {
 
@@ -177,6 +192,7 @@ class OxasRequestCache {
         }
 
         array_push($data, $row);
+        
         return $data;
     }
 }
