@@ -80,8 +80,8 @@ class OxasController {
             $soapEncryptPassword = new OxasSoapEncryptPassword( $password, $this->endpoint, $this->getSoapClient() );
         }
 
-        $this->encryptPassword = $soapEncryptPassword->parseSoapResult();
-        return $this->encryptPassword;
+        $this->encryptedPassword = $soapEncryptPassword->parseSoapResult();
+        return $this->encryptedPassword;
     }
 
     /**
