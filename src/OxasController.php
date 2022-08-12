@@ -29,8 +29,8 @@ class OxasController {
      */
     public function __construct( $user, $password, $client, $endpoint ) {
 
-        require dirname(__FILE__) . '\OxasSoapEncryptPassword.php';
-        require dirname(__FILE__) . '\OxasSoapFlatRequest.php';
+        require dirname(__FILE__) . '/OxasSoapEncryptPassword.php';
+        require dirname(__FILE__) . '/OxasSoapFlatRequest.php';
 
         $this->user     = $user;
         $this->password = $password;
