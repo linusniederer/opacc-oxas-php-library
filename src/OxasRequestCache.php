@@ -99,7 +99,7 @@ class OxasRequestCache {
      */
     private function getCache( $cacheName ) {
 
-        $cacheFile = $this->folder . '\\' . $cacheName;
+        $cacheFile = $this->folder . '/' . $cacheName;
         $cacheData = new SimpleXMLElement( $cacheFile, 0, TRUE );
         
         return $this->parseCache( $cacheData );
@@ -113,7 +113,7 @@ class OxasRequestCache {
      */
     private function setCache( $cacheName, $data ) {
 
-        $cacheFile = $this->folder . '\\' . $cacheName;
+        $cacheFile = $this->folder . '/' . $cacheName;
         $data->saveXML($cacheFile);
     }
 
