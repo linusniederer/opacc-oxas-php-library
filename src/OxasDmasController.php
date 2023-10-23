@@ -194,6 +194,7 @@ class OxasDmasController {
     public function loadFilesFromFolder( $documentCategoryId, $folderId )
     {
         $files = array();
+        $category = null;
 
         // get document list
         $documents = $this->getDocumentList( $documentCategoryId, $folderId );
@@ -202,13 +203,21 @@ class OxasDmasController {
 
             $documentVersion = $document['Return.CurrentVersionId'];
             $documentId      = $document['Return.DocumentId'];
+            $category        = $document['Return.FolderName'];
+            $title           = $document['Return.Title'];
             
             // get file version for each file in document list
             $fileVersion = $this->getDocumentVersionFileList($documentId, $documentVersion);
 
             // get file from DMAS
             $fileId  = $fileVersion[0]["Return.FileId"];
-            $files[] = $this->loadFile($fileId);
+            $file    = $this->loadFile($fileId);
+
+            // add attributes
+            $file['fileTitle']    = $title;
+            $file['fileCategory'] = $category;
+
+            $files[] = $file;
         }
 
         return $files;
@@ -218,7 +227,6 @@ class OxasDmasController {
     /**
      * This method processes the soap requests
      * 
-     * @param string port
      * @param string operation
      * @param array requestParams
      * 
@@ -240,6 +248,30 @@ class OxasDmasController {
         $soapFlatRequest = new OxasSoapFlatRequest( $requestInformations );
         
         return $soapFlatRequest->parseSoapResult();
+    }
+
+    /**
+     * This method processes the soap requests without request params
+     * 
+     * @param string operation
+     * @param array requestParams
+     * 
+     * @return array parsed soap result
+     */
+    private function flatRequestWithoutParams( $operation ) {
+
+        $requestInformations = array(
+            'endpoint'  => $this->endpoint,
+            'user'      => $this->user,
+            'password'  => $this->encryptPassword(),
+            'client'    => $this->client,
+            'port'      => $this->port, 
+            'operation' => $operation,
+            'soapClient'=> $this->getSoapClient(),
+            'requestParams' => array(),
+        );
+
+        return new OxasSoapFlatRequest( $requestInformations );
     }
 
     /**
@@ -278,6 +310,19 @@ class OxasDmasController {
         );
 
         return $soapClient;
+    }
+
+    /**
+     * This method reads the max junk file size from DMAS
+     */
+    private function maxJunkFileSizeInByte() {
+
+        $maxJunkFileSizeInByte = $this->flatRequestWithoutParams( 'MaxJunkFileSizeInByte' );
+
+        $jsonString   = json_encode( $maxJunkFileSizeInByte );
+        $result_array = json_decode($jsonString, true);
+        
+        return $result_array['soapResult']['sBody']['FlatRequestResponse']['ResponseData']['Columns']['Column']['Rows']['astring'];
     }
 
     /**
