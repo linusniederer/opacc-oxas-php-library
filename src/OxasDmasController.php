@@ -26,11 +26,11 @@ class OxasDmasController {
     /**
      * Constructor
      * 
-     * @param string user 
-     * @param string password
-     * @param integer client
-     * @param string endpoint
-     * @param string folder
+     * @param String user 
+     * @param String password
+     * @param Int client
+     * @param String endpoint
+     * @param String folder
      */
     public function __construct( $user, $password, $client, $endpoint, $folder ) {
         $this->user     = $user;
@@ -43,8 +43,10 @@ class OxasDmasController {
     /**
      * Load a list of subfolders based on parentFolderId
      * 
-     * @param string parentFolderId
-     * @param string sorteyBy (optional)
+     * @param String parentFolderId
+     * @param String sorteyBy (optional)
+     * 
+     * @param FlatRequest|Boolean
      */
     public function getFolderList( $parentFolderId, $sortedBy = null ) {
 
@@ -71,9 +73,11 @@ class OxasDmasController {
     /**
      * Load a list of documents based on documentCategoryId and folderId
      * 
-     * @param string documentCategoryId
-     * @param string folderId
-     * @param string sorteyBy (optional)
+     * @param String documentCategoryId
+     * @param String folderId
+     * @param String sorteyBy (optional)
+     * 
+     * @param FlatRequest|Boolean
      */
     public function getDocumentList( $documentCategoryId, $folderId, $sortedBy = null ) {
 
@@ -100,10 +104,12 @@ class OxasDmasController {
     /**
      * Load a version list of a document based on documentId and versionId
      * 
-     * @param int documentCategoryId
-     * @param int folderId
-     * @param string viewerFileFlag (optional)
-     * @param string sorteyBy (optional)
+     * @param Int documentCategoryId
+     * @param Int folderId
+     * @param String viewerFileFlag (optional)
+     * @param String sorteyBy (optional)
+     * 
+     * @param FlatRequest|Boolean
      */
     public function getDocumentVersionFileList( $documentId, $versionId, $viewerFileFlag = '1', $sortedBy = null ) {
 
@@ -130,17 +136,19 @@ class OxasDmasController {
     }
 
     /**
-     * Get a DMAS file based on fileID
+     * Get a DMAS file based on fileId
      * 
-     * @param string fileID
+     * @param String fileId
+     * 
+     * @param FlatRequest|Boolean
      */
-    public function getFile( $fileID ) {
+    public function getFile( $fileId ) {
 
-        if( !empty($fileID) ) {
+        if( !empty($fileId) ) {
 
             // prepare requestParams
             $requestParams = array(
-                $fileID,
+                $fileId,
             );
 
             return $this->flatRequest( 'GetFile', $requestParams );
@@ -150,9 +158,11 @@ class OxasDmasController {
     }
 
     /**
-     * Load a DMAS file based on fileID
+     * Load a DMAS file based on fileId
      * 
-     * @param int fileID
+     * @param Int fileId
+     * 
+     * @param Array dmasFileInformation
      */
     public function loadFile( $fileId ) {
 
@@ -216,8 +226,10 @@ class OxasDmasController {
     /**
      * Load all DMAS Files from a specified DMAS Folder by folderId
      * 
-     * @param string documentCategoryId
-     * @param string folderId
+     * @param String documentCategoryId
+     * @param String folderId
+     * 
+     * @return Array dmasFiles
      */
     public function loadFilesFromFolder( $documentCategoryId, $folderId )
     {
@@ -254,10 +266,10 @@ class OxasDmasController {
     /**
      * This method processes the soap requests
      * 
-     * @param string operation
-     * @param array requestParams
+     * @param String operation
+     * @param Array requestParams
      * 
-     * @return array parsed soap result
+     * @return OxasSoapFlatRequest requestResult
      */
     private function flatRequest( $operation, $requestParams ) {
 
@@ -280,10 +292,9 @@ class OxasDmasController {
     /**
      * This method processes the soap requests without request params
      * 
-     * @param string operation
-     * @param array requestParams
+     * @param String operation
      * 
-     * @return array parsed soap result
+     * @return OxasSoapFlatRequest requestResult
      */
     private function flatRequestWithoutParams( $operation ) {
 
@@ -304,9 +315,9 @@ class OxasDmasController {
     /**
      * This method performs an encryption of the password
      * 
-     * @param string password (optional)
+     * @param String password (optional)
      * 
-     * @return string encrypted password
+     * @return String encryptedPassword
      */
     private function encryptPassword( $password = null ) {
         
@@ -341,6 +352,8 @@ class OxasDmasController {
 
     /**
      * This method reads the max junk file size from DMAS
+     * 
+     * @return Int maxJunkFileSizeInByte
      */
     private function maxJunkFileSizeInByte() {
 
@@ -362,7 +375,7 @@ class OxasDmasController {
      * 
      * @param Object file
      * 
-     * @return Object|boolean
+     * @return Object|Boolean
      */
     private function loadFileFromCache( $file ) {
 
@@ -392,9 +405,9 @@ class OxasDmasController {
     /**
      * This method removes descriptions and brackets from the base64 string
      * 
-     * @param string base64
+     * @param String base64
      * 
-     * @return string base64
+     * @return String base64
      */
     private function filterBase64String( $base64 ) {
 
@@ -407,10 +420,10 @@ class OxasDmasController {
     /**
      * This method converts a Base64 string to a file and saves it to the folder path
      *
-     * @param string base64
-     * @param string fileName
+     * @param String base64
+     * @param String fileName
      *
-     * @return string fileName
+     * @return String fileName
      */
     private function convertBase64ToFile( $base64, $fileName ) {
 
