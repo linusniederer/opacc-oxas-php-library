@@ -14,6 +14,7 @@ The different classes are described below.
 |Classname|Description|
 |---|---|
 |OxasController|This class manages the connection to OpaccOXAS|
+|OxasDmasController|This class manages the connection to OpaccDMAS|
 |OxasRequestCache|This class manages and modifies the cache|
 |OxasSoapEncryptPassword|This class is used to send a password encryption request|
 |OxasSoapFlatRequest|This class is used to send a soap flat request|
