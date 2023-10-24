@@ -21,6 +21,7 @@ class OxasDmasController {
     public $endpoint;
 
     public $port = "DMS";
+    public $maxJunkFileSizeInByte = 240000;
 
     /**
      * Constructor
@@ -152,34 +153,61 @@ class OxasDmasController {
      * Load a DMAS file based on fileID
      * 
      * @param int fileID
-     * @param int startAtByte
-     * @param int maxBytes
-     * @param int mediaFileId (optional)
      */
-    public function loadFile( $fileId, $startAtByte = 0, $mediaFileId = null ) {
+    public function loadFile( $fileId ) {
 
         if( !empty($fileId) ) {
 
-            // get file information
+            // get DMAS File informations
             $file = $this->getFile( $fileId );
+            
+            // check cache of DMAS files
+            $fileFromCache = $this->loadFileFromCache( $file );
 
-            // prepare requestParams
-            $requestParams = array(
-                $fileId,
-                $startAtByte,
-                $file[0]["Return.FileSize"],
-                $mediaFileId,
-            );
+            // check if file is newer before loading
+            if( empty($fileFromCache) ) {
 
-            $data     = $this->flatRequest( 'LoadFile', $requestParams );
-            $fileName = $this->convertBase64ToFile($data[0]["Return"], $file[0]["Return.RealFileName"]);
+                $maxJunkFileSizeInByte    = $this->maxJunkFileSizeInByte();
+                $fileTransferFromDmsState = 1;
 
-            return array(
-                'fileName' => $fileName,
-                'fileType' => $file[0]["Return.FileExtension"],
-                'filePath' => $this->folder,
-                'fileDate' => $file[0]["Return.LastIndexedTS"],
-            );
+                // prepare variables
+                $base64Data     = '';
+                $fileInByte     = $file[0]["Return.FileSize"];
+                $startAtByte    = 0;
+
+                while ($fileTransferFromDmsState == 1) {
+
+                    // Prepare requestParams
+                    $requestParams = array(
+                        $fileId,
+                        $startAtByte,
+                        $maxJunkFileSizeInByte,
+                        $mediaFileId,
+                    );
+
+                    // Get base64 encoded data from response
+                    $response                  = $this->flatRequest('LoadFile', $requestParams);
+                    $base64Data               .= $this->filterBase64String($response[0]["Return"]);
+                    $fileTransferFromDmsState  = $response[0]["fileTransferFromDmsState"];
+
+                    // Update startAtByte for the next iteration
+                    $startAtByte += $maxJunkFileSizeInByte;
+                }
+
+                // convert base64 to file
+                $fileName = $this->convertBase64ToFile($base64Data, $file[0]["Return.RealFileName"]);
+
+                return array(
+                    'fileName' => $fileName,
+                    'fileType' => $file[0]["Return.FileExtension"],
+                    'filePath' => $this->folder,
+                    'fileDate' => $file[0]["Return.LastIndexedTS"],
+                    'fileSize' => $fileInByte,
+                );
+            }
+
+            // return file from cache
+            return $fileFromCache;
         }
 
         return null;
@@ -222,7 +250,6 @@ class OxasDmasController {
 
         return $files;
     }
-
 
     /**
      * This method processes the soap requests
@@ -317,12 +344,64 @@ class OxasDmasController {
      */
     private function maxJunkFileSizeInByte() {
 
-        $maxJunkFileSizeInByte = $this->flatRequestWithoutParams( 'MaxJunkFileSizeInByte' );
+        if(empty($this->maxJunkFileSizeInByte))
+        {
+            $maxJunkFileSizeInByte = $this->flatRequestWithoutParams( 'MaxJunkFileSizeInByte' );
 
-        $jsonString   = json_encode( $maxJunkFileSizeInByte );
-        $result_array = json_decode($jsonString, true);
-        
-        return $result_array['soapResult']['sBody']['FlatRequestResponse']['ResponseData']['Columns']['Column']['Rows']['astring'];
+            $jsonString   = json_encode( $maxJunkFileSizeInByte );
+            $result_array = json_decode($jsonString, true);
+            
+            return $result_array['soapResult']['sBody']['FlatRequestResponse']['ResponseData']['Columns']['Column']['Rows']['astring'];
+        }
+
+        return $this->maxJunkFileSizeInByte;        
+    }
+
+    /**
+     * This method reads the DMAS file cache 
+     * 
+     * @param Object file
+     * 
+     * @return Object|boolean
+     */
+    private function loadFileFromCache( $file ) {
+
+        // get file path
+        $cacheFilePath = $this->folder . '/' . $file[0]["Return.RealFileName"];
+
+        if( file_exists( $cacheFilePath )) {
+
+            $cacheFileTime = @filemtime( $cacheFilePath );
+            $fileTime      = $file[0]["Return.LastIndexedTS"];
+
+            if ( !$cacheFileTime or ( strtotime( $cacheFileTime ) < strtotime( $fileTime ) ) ) {
+                
+                return array(
+                    'fileName' => $file[0]["Return.RealFileName"],
+                    'fileType' => $file[0]["Return.FileExtension"],
+                    'filePath' => $this->folder,
+                    'fileDate' => $file[0]["Return.LastIndexedTS"],
+                    'fileSize' => $file[0]["Return.FileSize"],
+                );
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * This method removes descriptions and brackets from the base64 string
+     * 
+     * @param string base64
+     * 
+     * @return string base64
+     */
+    private function filterBase64String( $base64 ) {
+
+        $base64 = str_replace('[Base64:', '', $base64);
+        $base64 = rtrim($base64, ']');
+
+        return $base64;
     }
 
     /**
@@ -333,14 +412,10 @@ class OxasDmasController {
      *
      * @return string fileName
      */
-    private function convertBase64ToFile($base64, $fileName) {
+    private function convertBase64ToFile( $base64, $fileName ) {
 
         // define filePath
         $filePath = $this->folder . '/' . $fileName;
-
-        // remove flags from base64 string
-        $base64 = str_replace('[Base64:', '', $base64);
-        $base64 = rtrim($base64, ']');
 
         // Decode the Base64 string
         $bin = base64_decode($base64, true);
