@@ -136,6 +136,28 @@ class OxasDmasController {
     }
 
     /**
+     * Get a DMAS document based on documentId
+     * 
+     * @param String documentId
+     * 
+     * @param FlatRequest|Boolean
+     */
+    public function getDocument( $documentId ) {
+
+        if( !empty($documentId) ) {
+
+            // prepare requestParams
+            $requestParams = array(
+                $documentId,
+            );
+
+            return $this->flatRequest( 'GetDocument', $requestParams );
+        }
+
+        return null;
+    }
+
+    /**
      * Get a DMAS file based on fileId
      * 
      * @param String fileId
@@ -164,13 +186,20 @@ class OxasDmasController {
      * 
      * @param Array dmasFileInformation
      */
-    public function loadFile( $fileId ) {
+    public function loadFile( $documentId ) {
 
-        if( !empty($fileId) ) {
+        if( !empty($documentId) ) {
+
+            // get Document informations
+            $document = $this->getDocument( $documentId );
+
+            // get versions from given document
+            $documentVersionFileList = $this->getDocumentVersionFileList( $document[0]["Return.DocumentId"], $document[0]["Return.CurrentVersionId"]);
 
             // get DMAS File informations
-            $file = $this->getFile( $fileId );
-            
+            $file = $this->getFile( $documentVersionFileList[0]["Return.FileId"] );
+            $fileId = $file[0]["Return.FileId"];
+
             // check cache of DMAS files
             $fileFromCache = $this->loadFileFromCache( $file );
 
@@ -183,6 +212,7 @@ class OxasDmasController {
                 // prepare variables
                 $base64Data     = '';
                 $fileInByte     = $file[0]["Return.FileSize"];
+                $fileId         = $file[0]["Return.FileId"];
                 $startAtByte    = 0;
 
                 while ($fileTransferFromDmsState == 1) {
@@ -192,7 +222,7 @@ class OxasDmasController {
                         $fileId,
                         $startAtByte,
                         $maxJunkFileSizeInByte,
-                        $mediaFileId,
+                        null,
                     );
 
                     // Get base64 encoded data from response
@@ -250,8 +280,7 @@ class OxasDmasController {
             $fileVersion = $this->getDocumentVersionFileList($documentId, $documentVersion);
 
             // get file from DMAS
-            $fileId  = $fileVersion[0]["Return.FileId"];
-            $file    = $this->loadFile($fileId);
+            $file    = $this->loadFile( $documentId );
 
             // add attributes
             $file['fileTitle']    = $title;
